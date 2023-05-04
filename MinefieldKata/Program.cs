@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MinefieldKata.Models;
+using MinefieldKata.Utilities;
 
 namespace MinefieldKata
 {
@@ -12,13 +14,26 @@ namespace MinefieldKata
 
         public static async Task Main()
         {
-            var builder = new HostBuilder()
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddSingleton(_configuration);
+            var numberOfMines = _configuration.GetValue<int>("mineCount");
+            var boardWidth = _configuration.GetValue<int>("width");
+            var boardHeight = _configuration.GetValue<int>("height");
 
-                    services.AddHostedService<MinefieldGame>();
-                });
+            var builder = new HostBuilder()
+              .ConfigureServices((hostContext, services) =>
+              {
+                  services.AddScoped<IGame, Game>();
+                  services.AddTransient<IRandomProvider, RandomProvider>();
+                  services.AddScoped<IUserInput, UserInput>();
+                  services.AddScoped<IMinePositionGenerator, MinePositionGenerator>();
+                  services.AddScoped<IConsoleDisplay, ConsoleDisplay>();
+
+                  services.AddScoped<IMap, Map>(x =>
+                      new Map(x.GetService<IMinePositionGenerator>(), boardWidth, boardHeight, numberOfMines));
+
+                  services.AddSingleton(_configuration);
+
+                  services.AddHostedService<MinefieldGame>();
+              });
 
             await builder.RunConsoleAsync();
         }

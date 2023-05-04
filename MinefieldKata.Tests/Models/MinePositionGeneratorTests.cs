@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace MinefieldKata.Tests.Models
 {
-    public class MineLayerTests
+    public class MinePositionGeneratorTests
     {
         private Mock<IRandomProvider> mockRandom;
         private Mock<IMap> mockMap;
         private MinePositionGenerator mineLayer;
 
-        public MineLayerTests()
+        public MinePositionGeneratorTests()
         {
             mockRandom = new Mock<IRandomProvider>();
             mockMap = new Mock<IMap>();

@@ -1,18 +1,24 @@
 ﻿using Microsoft.Extensions.Hosting;
+using MinefieldKata.Models;
 
 namespace MinefieldKata
 {
     public class MinefieldGame : IHostedService
     {
-        public Task StartAsync(CancellationToken cancellationToken)
+        private readonly IGame game;
+
+        public MinefieldGame(IGame game)
         {
-            Console.WriteLine("Running");
-            return Task.CompletedTask;
+            this.game = game;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await game.Run(cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine("Stopping");
             return Task.CompletedTask;
         }
     }
