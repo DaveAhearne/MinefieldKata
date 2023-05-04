@@ -1,25 +1,22 @@
 ﻿using MinefieldKata.Enums;
 using MinefieldKata.Models;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MinefieldKata.Tests.Models
 {
-	public class GameStateHandlerTests
+    public class GameStateHandlerTests
 	{
         private Mock<IPlayer> mockPlayer;
+        private Mock<IMap> mockMap;
 
         private GameStateHandler gameStateHandler;
 
         public GameStateHandlerTests()
         {
             mockPlayer = new Mock<IPlayer>();
+            mockMap = new Mock<IMap>();
 
-            gameStateHandler = new GameStateHandler(mockPlayer.Object);
+            gameStateHandler = new GameStateHandler(mockMap.Object, mockPlayer.Object);
         }
 
         [Fact]
@@ -49,6 +46,16 @@ namespace MinefieldKata.Tests.Models
             gameStateHandler.UpdateGameState();
 
             Assert.Equal(GameState.Won, gameStateHandler.State);
+        }
+
+        [Fact]
+        public void WhenUpdatingTheGameState_IfThePlayerIsStoodOnAMine_DamagePlayerIsCalled()
+        {
+            mockMap.Setup(x => x.IsStandingOnMine(mockPlayer.Object)).Returns(true);
+
+            gameStateHandler.UpdateGameState();
+
+            mockPlayer.Verify(x => x.Damage(), Times.Once);
         }
     }
 }

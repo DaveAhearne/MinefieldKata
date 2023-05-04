@@ -10,16 +10,21 @@ namespace MinefieldKata.Models
 
     public class GameStateHandler : IGameStateHandler
     {
+        private readonly IMap _map;
         private readonly IPlayer _player;
         public GameState State { get; private set; } = GameState.Playing;
 
-        public GameStateHandler(IPlayer player)
+        public GameStateHandler(IMap map, IPlayer player)
         {
+            _map = map;
             _player = player;
         }
 
         public void UpdateGameState()
         {
+            if (_map.IsStandingOnMine(_player))
+                _player.Damage();
+
             if (_player.Lives <= 0)
             {
                 State = GameState.Lost;
