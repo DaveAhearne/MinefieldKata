@@ -1,4 +1,5 @@
 ﻿using MinefieldKata.Enums;
+using System.Numerics;
 
 namespace MinefieldKata.Models
 {
@@ -6,6 +7,8 @@ namespace MinefieldKata.Models
     {
         int Height { get; }
         int Width { get; }
+
+        bool IsMine(Position p);
     }
 
     public class Map : IMap
@@ -14,7 +17,7 @@ namespace MinefieldKata.Models
         public int Width { get; }
         public int Height { get; }
 
-        public Map(int width, int height)
+        public Map(IMineLayer mineLayer, int width, int height, int numberOfMines)
         {
             Width = width;
             Height = height;
@@ -24,6 +27,11 @@ namespace MinefieldKata.Models
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     grid[x, y] = SquareType.Safe;
+        }
+
+        public bool IsMine(Position p)
+        {
+            return grid[p.X, p.Y] == SquareType.Mine;
         }
     }
 }
