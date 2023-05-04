@@ -9,6 +9,7 @@ namespace MinefieldKata.Models
         void Damage();
         bool Move(Direction direction);
         void SetPosition(Position position);
+        Position Position { get; }
     }
 
     public class Player : IPlayer

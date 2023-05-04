@@ -8,6 +8,7 @@ namespace MinefieldKata.Models
         int Width { get; }
 
         bool IsMine(Position p);
+        bool IsStandingOnMine(IPlayer player);
     }
 
     public class Map : IMap
@@ -45,6 +46,11 @@ namespace MinefieldKata.Models
         public bool IsMine(Position p)
         {
             return grid[p.X, p.Y] == SquareType.Mine;
+        }
+
+        public bool IsStandingOnMine(IPlayer player)
+        {
+            return IsMine(player.Position);
         }
     }
 }

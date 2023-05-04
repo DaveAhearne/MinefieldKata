@@ -1,6 +1,7 @@
 ﻿using MinefieldKata.Enums;
 using MinefieldKata.Models;
 using Moq;
+using System.Numerics;
 
 namespace MinefieldKata.Tests.Models
 {
@@ -46,6 +47,22 @@ namespace MinefieldKata.Tests.Models
             map.grid[1, 1] = SquareType.Safe;
 
             Assert.False(map.IsMine(new Position(1, 1)));
+        }
+
+        [Fact]
+        public void WhenAPlayerIsStoodOnAMine_IsStandingOnMineIsTrue()
+        {
+            var mockMineLayer = new Mock<IMinePositionGenerator>();
+            mockMineLayer.Setup(x => x.Generate(It.IsAny<IMap>(), It.IsAny<int>())).Returns(new List<Position>());
+
+            var map = new Map(mockMineLayer.Object, 5, 5, 0);
+
+            map.grid[1, 1] = SquareType.Mine;
+
+            var player = new Player(map);
+            player.SetPosition(new Position(1, 1));
+
+            Assert.True(map.IsStandingOnMine(player));
         }
     }
 }
