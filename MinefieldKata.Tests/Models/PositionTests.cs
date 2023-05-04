@@ -74,5 +74,17 @@ namespace MinefieldKata.Tests.Models
 
             Assert.NotEqual(positionA.GetHashCode(), positionB.GetHashCode());
         }
+
+        [Theory]
+        [InlineData(0, 0, "A1")]
+        [InlineData(1, 2, "B3")]
+        [InlineData(3, 3, "D4")]
+        [InlineData(2, 3, "C4")]
+        [InlineData(4, 4, "E5")]
+        public void WhenCallingToStringOnAPosition_ItReturnsTheCorrectSerialization(int x, int y, string output)
+        {
+            var position = new Position(x, y);
+            Assert.Equal(output, position.ToString());
+        }
     }
 }

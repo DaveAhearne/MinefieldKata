@@ -1,4 +1,5 @@
 ﻿using MinefieldKata.Enums;
+using MinefieldKata.Utilities;
 
 namespace MinefieldKata.Models
 {
@@ -7,20 +8,25 @@ namespace MinefieldKata.Models
         GameState State { get; }
         void UpdateGameState();
         void HandleInput(ConsoleKey key);
+        void DisplayStatus();
     }
 
     public class GameStateHandler : IGameStateHandler
     {
         private readonly IMap _map;
         private readonly IPlayer _player;
+        private readonly IConsoleDisplay _consoleDisplay;
+        private readonly IUserInput _userInput;
 
         public int MoveCount { get; private set; } = 0;
         public GameState State { get; private set; } = GameState.Playing;
 
-        public GameStateHandler(IMap map, IPlayer player)
+        public GameStateHandler(IMap map, IPlayer player, IConsoleDisplay consoleDisplay, IUserInput userInput)
         {
             _map = map;
             _player = player;
+            _consoleDisplay = consoleDisplay;
+            _userInput = userInput;
         }
 
         public void UpdateGameState()
@@ -57,6 +63,24 @@ namespace MinefieldKata.Models
 
             if (_player.Move(direction))
                 MoveCount++;
+        }
+
+        public void DisplayStatus()
+        {
+            switch (State)
+            {
+                case GameState.Playing:
+                    _consoleDisplay.UpdateDisplayLine($"Number of Moves: {MoveCount} \t Player Position: {_player.Position} \t Number of Lives: {_player.Lives}");
+                    break;
+                case GameState.Won:
+                    _userInput.RemoveInputListeners();
+                    _consoleDisplay.SetDisplayLine($"You win! :) - Your score was {MoveCount}");
+                    break;
+                case GameState.Lost:
+                    _userInput.RemoveInputListeners();
+                    _consoleDisplay.SetDisplayLine("You lose! :(");
+                    break;
+            }
         }
     }
 }

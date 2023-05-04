@@ -1,5 +1,6 @@
 ﻿using MinefieldKata.Enums;
 using MinefieldKata.Models;
+using MinefieldKata.Utilities;
 using Moq;
 
 namespace MinefieldKata.Tests.Models
@@ -8,6 +9,8 @@ namespace MinefieldKata.Tests.Models
 	{
         private Mock<IPlayer> mockPlayer;
         private Mock<IMap> mockMap;
+        private Mock<IConsoleDisplay> mockConsoleDisplay;
+        private Mock<IUserInput> mockUserInput;
 
         private GameStateHandler gameStateHandler;
 
@@ -15,8 +18,10 @@ namespace MinefieldKata.Tests.Models
         {
             mockPlayer = new Mock<IPlayer>();
             mockMap = new Mock<IMap>();
+            mockConsoleDisplay = new Mock<IConsoleDisplay>();
+            mockUserInput = new Mock<IUserInput>();
 
-            gameStateHandler = new GameStateHandler(mockMap.Object, mockPlayer.Object);
+            gameStateHandler = new GameStateHandler(mockMap.Object, mockPlayer.Object, mockConsoleDisplay.Object, mockUserInput.Object);
         }
 
         [Fact]
@@ -101,6 +106,43 @@ namespace MinefieldKata.Tests.Models
 
             mockPlayer.Verify(x => x.Move(It.IsAny<Direction>()), Times.Never);
             Assert.Equal(0, gameStateHandler.MoveCount);
+        }
+
+
+        [Fact]
+        public void WhenCallingDisplayStatus_AndTheStateIsPlaying_TheCurrentDisplayLineIsUpdatedWithTheScoreAndPosition()
+        {
+            mockPlayer.Setup(x => x.IsThroughTheMinefield()).Returns(false);
+            mockPlayer.SetupGet(x => x.Lives).Returns(3);
+            mockPlayer.SetupGet(x => x.Position).Returns(new Position(0, 0));
+
+            gameStateHandler.DisplayStatus();
+            mockConsoleDisplay.Verify(x => x.UpdateDisplayLine($"Number of Moves: 0 \t Player Position: A1 \t Number of Lives: 3"), Times.Once);
+        }
+
+        [Fact]
+        public void WhenCallingDisplayStatus_AndTheStateIsWon_TheCurrentDisplayLineIsSetToTheWinMessageAndScoreAndInputListenersAreRemoved()
+        {
+            mockPlayer.Setup(x => x.IsThroughTheMinefield()).Returns(true);
+            mockPlayer.SetupGet(x => x.Lives).Returns(3);
+
+            gameStateHandler.UpdateGameState();
+            gameStateHandler.DisplayStatus();
+
+            mockConsoleDisplay.Verify(x => x.SetDisplayLine($"You win! :) - Your score was 0"), Times.Once);
+            mockUserInput.Verify(x => x.RemoveInputListeners(), Times.Once);
+        }
+
+        [Fact]
+        public void WhenCallingDisplayStatus_AndTheStateIsLost_TheCurrentDisplayLineIsSetToTheLoseMessageAndInputListenersAreRemoved()
+        {
+            mockPlayer.SetupGet(x => x.Lives).Returns(0);
+
+            gameStateHandler.UpdateGameState();
+            gameStateHandler.DisplayStatus();
+
+            mockConsoleDisplay.Verify(x => x.SetDisplayLine($"You lose! :("), Times.Once);
+            mockUserInput.Verify(x => x.RemoveInputListeners(), Times.Once);
         }
     }
 }

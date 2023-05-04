@@ -4,6 +4,7 @@
     {
         public int X { get; private set; }
         public int Y { get; private set; }
+        private char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public Position(int x, int y)
         {
@@ -30,6 +31,11 @@
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y);
+        }
+
+        public override string ToString()
+        {
+            return $"{alpha[X]}{Y + 1}";
         }
     }
 }
