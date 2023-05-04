@@ -13,6 +13,8 @@ namespace MinefieldKata.Models
     {
         private readonly IMap _map;
         private readonly IPlayer _player;
+
+        public int MoveCount { get; private set; } = 0;
         public GameState State { get; private set; } = GameState.Playing;
 
         public GameStateHandler(IMap map, IPlayer player)
@@ -53,7 +55,8 @@ namespace MinefieldKata.Models
             if (direction == Direction.Unknown)
                 return;
 
-            _player.Move(direction);
+            if (_player.Move(direction))
+                MoveCount++;
         }
     }
 }

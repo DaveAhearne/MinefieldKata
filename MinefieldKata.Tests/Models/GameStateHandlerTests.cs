@@ -63,13 +63,29 @@ namespace MinefieldKata.Tests.Models
         [InlineData(ConsoleKey.DownArrow, Direction.Down)]
         [InlineData(ConsoleKey.LeftArrow, Direction.Left)]
         [InlineData(ConsoleKey.RightArrow, Direction.Right)]
-        public void WhenHandlingInput_IfTheUserInADirectionThePlayerIsMoved(ConsoleKey key, Direction direction)
+        public void WhenHandlingInput_IfTheUserInADirectionAndTheMoveIsValid_ThePlayerIsMovedAndTheMoveCountIsIncremented(ConsoleKey key, Direction direction)
         {
             mockPlayer.Setup(x => x.Move(It.IsAny<Direction>())).Returns(true);
 
             gameStateHandler.HandleInput(key);
 
             mockPlayer.Verify(x => x.Move(direction), Times.Once);
+            Assert.Equal(1, gameStateHandler.MoveCount);
+        }
+
+        [Theory]
+        [InlineData(ConsoleKey.UpArrow, Direction.Up)]
+        [InlineData(ConsoleKey.DownArrow, Direction.Down)]
+        [InlineData(ConsoleKey.LeftArrow, Direction.Left)]
+        [InlineData(ConsoleKey.RightArrow, Direction.Right)]
+        public void WhenHandlingInput_IfTheUserInADirectionAndTheMoveIsNotValid_TheMoveCountIsNotIncremented(ConsoleKey key, Direction direction)
+        {
+            mockPlayer.Setup(x => x.Move(It.IsAny<Direction>())).Returns(false);
+
+            gameStateHandler.HandleInput(key);
+
+            mockPlayer.Verify(x => x.Move(direction), Times.Once);
+            Assert.Equal(0, gameStateHandler.MoveCount);
         }
 
         [Theory]
@@ -77,13 +93,14 @@ namespace MinefieldKata.Tests.Models
         [InlineData(ConsoleKey.Backspace)]
         [InlineData(ConsoleKey.A)]
         [InlineData(ConsoleKey.NumPad8)]
-        public void WhenHandlingInput_AndHandleInputIsCalledWithAnyNonDirectionalKey_MoveIsNotCalled(ConsoleKey key)
+        public void WhenHandlingInput_AndHandleInputIsCalledWithAnyNonDirectionalKey_MoveIsNotCalledAndTheMovesAreNotIncremented(ConsoleKey key)
         {
             mockPlayer.Setup(x => x.Move(It.IsAny<Direction>())).Returns(false);
 
             gameStateHandler.HandleInput(key);
 
             mockPlayer.Verify(x => x.Move(It.IsAny<Direction>()), Times.Never);
+            Assert.Equal(0, gameStateHandler.MoveCount);
         }
     }
 }
