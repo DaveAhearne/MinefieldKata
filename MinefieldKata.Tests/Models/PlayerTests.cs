@@ -1,4 +1,5 @@
-﻿using MinefieldKata.Models;
+﻿using MinefieldKata.Enums;
+using MinefieldKata.Models;
 
 namespace MinefieldKata.Tests.Models
 {
@@ -28,6 +29,17 @@ namespace MinefieldKata.Tests.Models
         public void PlayerHasAnInitialPositionofZeroZero()
         {
             Assert.Equal(new Position(0, 0), player.Position);
+        }
+
+        [Theory]
+        [InlineData(Direction.Up, 0,1)]
+        [InlineData(Direction.Down, 0,-1)]
+        [InlineData(Direction.Left, -1,0)]
+        [InlineData(Direction.Right, 1,0)]
+        public void WhenThePlayerMovesInADirection_TheirPositionIsUpdated(Direction direction, int x, int y)
+        {
+            player.Move(direction);
+            Assert.Equal(new Position(x,y),player.Position);
         }
     }
 }
