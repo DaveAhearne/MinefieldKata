@@ -31,7 +31,6 @@ namespace MinefieldKata.Tests.Models
             Assert.Equal(GameState.Playing, gameStateHandler.State);
         }
 
-
         [Fact]
         public void WhenThePlayerHasZeroLives_TheGameStateIsSetToLost()
         {
@@ -39,6 +38,17 @@ namespace MinefieldKata.Tests.Models
             gameStateHandler.UpdateGameState();
 
             Assert.Equal(GameState.Lost, gameStateHandler.State);
+        }
+
+        [Fact]
+        public void WhenUpdatingTheGameState_IfThePlayerHasMadeItThroughTheMinefield_ThenTheStateIsSetToWon()
+        {
+            mockPlayer.SetupGet(x => x.Lives).Returns(3);
+            mockPlayer.Setup(x => x.IsThroughTheMinefield()).Returns(true);
+
+            gameStateHandler.UpdateGameState();
+
+            Assert.Equal(GameState.Won, gameStateHandler.State);
         }
     }
 }

@@ -25,6 +25,12 @@ namespace MinefieldKata.Models
                 State = GameState.Lost;
                 return;
             }
+
+            if (_player.IsThroughTheMinefield())
+            {
+                State = GameState.Won;
+                return;
+            }
         }
     }
 }

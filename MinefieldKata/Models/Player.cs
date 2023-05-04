@@ -9,6 +9,7 @@ namespace MinefieldKata.Models
         void Damage();
         bool Move(Direction direction);
         void SetPosition(Position position);
+        bool IsThroughTheMinefield();
         Position Position { get; }
     }
 
@@ -63,6 +64,11 @@ namespace MinefieldKata.Models
         public void SetPosition(Position position)
         {
             Position = position;
+        }
+
+        public bool IsThroughTheMinefield()
+        {
+            return Position.X == _map.Width - 1;
         }
     }
 }

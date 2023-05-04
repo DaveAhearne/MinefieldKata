@@ -98,9 +98,32 @@ namespace MinefieldKata.Tests.Models
             player = new Player(mockMap.Object);
             player.SetPosition(new Position(2, 0));
 
-            player.Move(Enums.Direction.Right);
+            player.Move(Direction.Right);
 
             Assert.Equal(2, player.Position.X);
+        }
+
+        [Fact]
+        public void WhenThePlayerIsToTheRightMostEdgeOfTheMineField_IsThroughTheMinefieldIsTrue()
+        {
+            mockMap.SetupGet(x => x.Height).Returns(1);
+            mockMap.SetupGet(x => x.Width).Returns(3);
+
+            player.Move(Direction.Right);
+            player.Move(Direction.Right);
+
+            Assert.True(player.IsThroughTheMinefield());
+        }
+
+        [Fact]
+        public void WhenThePlayerIsNotToTheRightMostEdgeOfTheMineField_IsThroughTheMinefieldIsFalse()
+        {
+            mockMap.SetupGet(x => x.Height).Returns(1);
+            mockMap.SetupGet(x => x.Width).Returns(3);
+
+            player.Move(Direction.Right);
+
+            Assert.False(player.IsThroughTheMinefield());
         }
     }
 }
