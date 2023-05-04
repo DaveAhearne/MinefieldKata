@@ -23,5 +23,11 @@ namespace MinefieldKata.Tests.Models
             player.Damage();
             Assert.Equal(2, player.Lives);
         }
+
+        [Fact]
+        public void PlayerHasAnInitialPositionofZeroZero()
+        {
+            Assert.Equal(new Position(0, 0), player.Position);
+        }
     }
 }
