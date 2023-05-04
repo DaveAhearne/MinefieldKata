@@ -16,5 +16,20 @@
             X = 0;
             Y = 0;
         }
+
+        public override bool Equals(object? obj)
+        {
+            Position? position = obj as Position;
+
+            if (position == null)
+                return false;
+
+            return position.Y == Y && position.X == X;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
+        }
     }
 }
