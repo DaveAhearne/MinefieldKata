@@ -13,20 +13,20 @@ namespace MinefieldKata.Tests.Models
     {
         private Mock<IRandomProvider> mockRandom;
         private Mock<IMap> mockMap;
-        private MineLayer mineLayer;
+        private MinePositionGenerator mineLayer;
 
         public MineLayerTests()
         {
             mockRandom = new Mock<IRandomProvider>();
             mockMap = new Mock<IMap>();
 
-            mineLayer = new MineLayer(mockRandom.Object);
+            mineLayer = new MinePositionGenerator(mockRandom.Object);
         }
 
         [Fact]
         public void WhenLayingZeroMines_AnEmptyListIsReturned()
         {
-            var result = mineLayer.LayMines(mockMap.Object, 0);
+            var result = mineLayer.Generate(mockMap.Object, 0);
             Assert.Empty(result);
         }
 
@@ -43,7 +43,7 @@ namespace MinefieldKata.Tests.Models
                 .Returns(true)
                 .Returns(false);
 
-            var result = mineLayer.LayMines(mockMap.Object, 1);
+            var result = mineLayer.Generate(mockMap.Object, 1);
 
             Assert.Single(result);
             Assert.Equal(4, result.First().X);
@@ -64,7 +64,7 @@ namespace MinefieldKata.Tests.Models
             mockMap.Setup(x => x.IsMine(It.IsAny<Position>()))
               .Returns(false);
 
-            var result = mineLayer.LayMines(mockMap.Object, 2);
+            var result = mineLayer.Generate(mockMap.Object, 2);
 
             Assert.Equal(2, result.Count);
         }

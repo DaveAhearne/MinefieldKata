@@ -2,21 +2,21 @@
 
 namespace MinefieldKata.Models
 {
-    public interface IMineLayer
+    public interface IMinePositionGenerator
     {
-        List<Position> LayMines(IMap map, int numberOfMines);
+        List<Position> Generate(IMap map, int numberOfMines);
     }
 
-    public class MineLayer : IMineLayer
+    public class MinePositionGenerator : IMinePositionGenerator
     {
         private readonly IRandomProvider _rngProvider;
 
-        public MineLayer(IRandomProvider rngProvider)
+        public MinePositionGenerator(IRandomProvider rngProvider)
         {
             _rngProvider = rngProvider;
         }
 
-        public List<Position> LayMines(IMap map, int numberOfMines)
+        public List<Position> Generate(IMap map, int numberOfMines)
         {
             int minesRemaining = numberOfMines;
             List<Position> mineLocations = new List<Position>();

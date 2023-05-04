@@ -12,7 +12,8 @@ namespace MinefieldKata.Tests.Models
         [InlineData(11,11)]
         public void WhenInitializingAMap_WithNoMines_AllSquaresAreSetToSafe(int width, int height)
         {
-            var mockMineLayer = new Mock<IMineLayer>();
+            var mockMineLayer = new Mock<IMinePositionGenerator>();
+            mockMineLayer.Setup(x => x.Generate(It.IsAny<IMap>(), It.IsAny<int>())).Returns(new List<Position>());
 
             var map = new Map(mockMineLayer.Object, width, height, 0);
 
@@ -24,7 +25,8 @@ namespace MinefieldKata.Tests.Models
         [Fact]
         public void WhenASquareIsMined_IsMineReturnsTrue()
         {
-            var mockMineLayer = new Mock<IMineLayer>();
+            var mockMineLayer = new Mock<IMinePositionGenerator>();
+            mockMineLayer.Setup(x => x.Generate(It.IsAny<IMap>(), It.IsAny<int>())).Returns(new List<Position>());
 
             var map = new Map(mockMineLayer.Object, 5, 5, 0);
 
@@ -36,7 +38,8 @@ namespace MinefieldKata.Tests.Models
         [Fact]
         public void WhenASquareIsNotMined_IsMineReturnsFalse()
         {
-            var mockMineLayer = new Mock<IMineLayer>();
+            var mockMineLayer = new Mock<IMinePositionGenerator>();
+            mockMineLayer.Setup(x => x.Generate(It.IsAny<IMap>(), It.IsAny<int>())).Returns(new List<Position>());
 
             var map = new Map(mockMineLayer.Object, 5, 5, 0);
 
