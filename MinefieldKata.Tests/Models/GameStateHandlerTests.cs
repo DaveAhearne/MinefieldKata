@@ -57,5 +57,33 @@ namespace MinefieldKata.Tests.Models
 
             mockPlayer.Verify(x => x.Damage(), Times.Once);
         }
+
+        [Theory]
+        [InlineData(ConsoleKey.UpArrow, Direction.Up)]
+        [InlineData(ConsoleKey.DownArrow, Direction.Down)]
+        [InlineData(ConsoleKey.LeftArrow, Direction.Left)]
+        [InlineData(ConsoleKey.RightArrow, Direction.Right)]
+        public void WhenHandlingInput_IfTheUserInADirectionThePlayerIsMoved(ConsoleKey key, Direction direction)
+        {
+            mockPlayer.Setup(x => x.Move(It.IsAny<Direction>())).Returns(true);
+
+            gameStateHandler.HandleInput(key);
+
+            mockPlayer.Verify(x => x.Move(direction), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(ConsoleKey.Escape)]
+        [InlineData(ConsoleKey.Backspace)]
+        [InlineData(ConsoleKey.A)]
+        [InlineData(ConsoleKey.NumPad8)]
+        public void WhenHandlingInput_AndHandleInputIsCalledWithAnyNonDirectionalKey_MoveIsNotCalled(ConsoleKey key)
+        {
+            mockPlayer.Setup(x => x.Move(It.IsAny<Direction>())).Returns(false);
+
+            gameStateHandler.HandleInput(key);
+
+            mockPlayer.Verify(x => x.Move(It.IsAny<Direction>()), Times.Never);
+        }
     }
 }

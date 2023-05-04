@@ -6,6 +6,7 @@ namespace MinefieldKata.Models
     {
         GameState State { get; }
         void UpdateGameState();
+        void HandleInput(ConsoleKey key);
     }
 
     public class GameStateHandler : IGameStateHandler
@@ -36,6 +37,23 @@ namespace MinefieldKata.Models
                 State = GameState.Won;
                 return;
             }
+        }
+
+        public void HandleInput(ConsoleKey key)
+        {
+            var direction = key switch
+            {
+                ConsoleKey.LeftArrow => Direction.Left,
+                ConsoleKey.RightArrow => Direction.Right,
+                ConsoleKey.UpArrow => Direction.Up,
+                ConsoleKey.DownArrow => Direction.Down,
+                _ => Direction.Unknown
+            };
+
+            if (direction == Direction.Unknown)
+                return;
+
+            _player.Move(direction);
         }
     }
 }
